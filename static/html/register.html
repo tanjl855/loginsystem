@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页</title>
+    <style type="text/css">
+        input:invalid {
+            border: 2px dashed red;
+        }
+
+        input:valid {
+            border: 2px solid black;
+        }
+    </style>
+    <script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+</head>
+<body>
+<h3>这是一个注册页面</h3>
+<form id="registerId">
+        用户名:<input type="text" name="name" id="username"></br>
+        密码:<input type="password" name="password" id="password"></br>
+        再次输入密码：<input type="password" name="repeated_password" id="repa"></br>
+        邮箱：<input type="email" name="email" id="email"></br>
+        手机号：<input type="text" name="phone" id="phone"></br>
+        <button type="button" name="register" id="register">注册</button>
+        <a href="../index.html" target="_self">返回首页</a>
+</form>
+
+<script type="text/javascript">
+    $("#register").click(function () {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var rePassword = $("#repa").val();
+        var email = $("#email").val();
+        var phone = $("#phone").val();
+        let regm = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/   //邮箱正则表达式
+        var regp=/^1[3456789]\d{9}$/;   //手机号正则表达式
+        if(username === ""){
+            alert("用户名不能为空！");
+            return false;
+        }
+        if (check_other_char(username)) {
+            alert("用户名不能含有特殊字符");
+            return false;
+        }
+        if(password === ""){
+            alert("密码不能为空！");
+            return false;
+        }
+        if(password!==rePassword) {
+            alert("两次密码不一致");
+            return false;
+        }
+        if (!regm.test(email)) {
+            alert("邮箱格式不正确");
+            return false;
+        }
+        if (!regp.test(phone)) {
+            alert("手机号格式不正确");
+            return false;
+        }
+        var formData = $("#registerId").serialize();  //返回的是name=root&password=root
+        function formToJson(data) {
+            data = data.replace(/&/g, "\",\"");
+            data = data.replace(/=/g, "\":\"");
+            data = "{\"" + data + "\"}";
+            return data;
+        }
+        formData = formToJson(formData)//经过转换，已经是json格式
+        $.ajax({
+            url: "/public/register",
+            contentType:"application/json",
+            dataType: "json",
+            type: "post",
+            xhrFields: {withCredentials: true},
+            data: formData,
+            success: function (result) {
+                var userjson = eval(result)
+                if (userjson.code === 200) {
+                    alert(result.message);
+                    window.location.href = "/html/login.html"
+                }else {
+                    alert(result.data)
+                    window.location.href = "/html/register.html"
+                }
+            },
+            error: function (data) {
+                alert("服务端出错500");
+                window.location.href = "/"
+            }
+        });
+    });
+    function check_other_char(str)
+    {
+        var arr = ["&", "\\", "/", "*", ">", "<", "@", "!","+", "%", "'", "'","#","!","-","(",")","\"","="];
+        for (var i = 0; i < arr.length; i++)
+        {
+            for (var j = 0; j < str.length; j++)
+            {
+                if (arr[i] === str.charAt(j))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+</script>
+</body>
+</html>

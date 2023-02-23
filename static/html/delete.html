@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人查看页</title>
+    <script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
+</head>
+<body>
+<form id="deleteId">
+    请再次输入用户名确认删除:<input type="text" name="name"></br>
+    </br>
+    <button type="button" name="delete" id="delete">确认</button>
+</form>
+<script type="text/javascript">
+    $("#delete").click(function () {
+        var formData = $("#deleteId").serialize();  //返回的是name=root&password=root
+        function formToJson(data) {
+            data = data.replace(/&/g, "\",\"");
+            data = data.replace(/=/g, "\":\"");
+            data = "{\"" + data + "\"}";
+            return data;
+        }
+        formData = formToJson(formData)//经过转换，已经是json格式
+        $.ajax({
+            url: "/adm/delete",
+            contentType: "application/json",
+            dataType: "json",
+            type: "post",
+            xhrFields: {withCredentials: true},
+            data: formData,
+            success: function (response) {
+                alert(response.message);
+                var userjson = eval(response)
+                if (userjson.code === 200) {
+                   window.location.href = "/adm/listed"
+                }else {
+                    window.location.href = "/adm/listed"
+                }
+            },
+            error: function () {
+                alert("服务端出错500");
+                window.location.href = "adm/listed"
+            }
+        });
+    });
+</script>
+</body>
+</html>

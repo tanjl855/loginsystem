@@ -1,0 +1,8 @@
+app:
+  host: 172.10.2.244     #192.168.1.185
+  port: 5432
+  username: postgres
+  password: postgres      #postgres
+log:
+  suffix: Log
+  maxSize: 5

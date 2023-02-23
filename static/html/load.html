@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人查看页</title>
+    <script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
+</head>
+<body>
+您的信息如下：</br>
+用户名:{{.Name}}</br>
+邮箱:{{.Email}}</br>
+手机号:{{.Phone}}</br></br>
+<form id="updateId">
+    新用户名:<input type="text" name="name" id="username"></br>
+    新密码: <input type="text" name="password" id="password"></br>
+    新邮箱：<input type="text" name="email" id="email"></br>
+    新手机号:<input type="text" name="phone">
+    </br>
+    <button type="button" name="update" id="update">修改信息</button>
+    <button type="button" name="logout" id="logout">退出登录</button>
+</form>
+<script type="text/javascript">
+    $("#logout").click(function () {
+        //删掉cookie
+        $.removeCookie('token', {path:'/'})
+        window.location.href = "/html/login.html"
+    });
+    $("#update").click(function () {
+        var password = $("#password").val();
+        if(password === ""){
+            alert("密码不能为空！");
+            return false;
+        }
+        var formData = $("#updateId").serialize();  //返回的是name=root&password=root
+        function formToJson(data) {
+            data = data.replace(/&/g, "\",\"");
+            data = data.replace(/=/g, "\":\"");
+            data = "{\"" + data + "\"}";
+            return data;
+        }
+        formData = formToJson(formData)//经过转换，已经是json格式
+        $.ajax({
+            url: "/adm/update",
+            contentType: "application/json",
+            dataType: "json",
+            type: "post",
+            xhrFields: {withCredentials: true},
+            data: formData,
+            success: function (response) {
+                alert(response.message);
+                var userjson = eval(response)
+                if (userjson.code === 200) {
+                    if (userjson.data.name === 'root') {
+                        window.location.href = "/adm/listed"
+                    } else {
+                        window.location.href = "/adm/loaded"
+                    }
+                } else if (userjson.code === 300) {
+                    //删除cookie信息,让用户重新登录
+                    $.removeCookie('token', {path:'/'})
+                    alert("请重新登录")
+                    window.location.href = "/html/login.html"
+                } else {
+                    if (userjson.data.name === 'root') {
+                        window.location.href = "/adm/listed"
+                    } else {
+                        window.location.href = "/adm/loaded"
+                    }
+                }
+            },
+            error: function () {
+                alert("服务端出错500");
+                window.location.href = "/"
+            }
+        });
+    });
+</script>
+</body>
+</html>

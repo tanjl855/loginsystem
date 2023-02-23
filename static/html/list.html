@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LoginSystemList</title>
+    <script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
+</head>
+<body>
+{{range .}}
+<p>用户名：{{.Name}}</p>
+<p>邮箱：{{.Email}}</p>
+<p>手机号：{{.Phone}}</p>
+<a href="/html/delete.html" target="_self">删除用户</a>
+<br>
+{{end}}
+<br>
+<button type="button" name="logout" id="logout">退出登录</button>
+<script>
+    $("#logout").click(function () {
+        //删掉cookie
+        $.removeCookie('token', {path:'/'})
+        window.location.href = "/html/login.html"
+    });
+</script>
+
+</body>
+</html>
