@@ -17,3 +17,5 @@
   7.特点：参数校验、错误处理、*_test.go测试模块
 
   9.功能：/public/*是公有页面；/adm/*为私有页面，需要携带对应token（通过中间件保存在context中）
+  
+  10.mongodb_test目录，项目跑起来不需要，自己练习mongo语法的时候加上去的，懒得加到.gitignoe去了
