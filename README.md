@@ -1,13 +1,19 @@
 # loginsystem
 
-基于Go原生包"net/http"的登录注册服务
+//基于Go原生包"net/http"的登录注册服务//
 
-使用context保存上下文（主要是cookie）
+  1.使用context保存上下文（主要是cookie）
 
-使用Linux + Docker + nginx 配置到具体域名
+  2.使用Linux + Docker + nginx 配置到具体域名
 
-数据库使用postgres
+  3.数据库使用postgres
 
-pkg.sh打包项目
-run.sh运行项目
-自定义日志输出到Log目录下的err.log & log.log
+  4.pkg.sh打包项目
+  
+  5.run.sh运行项目
+  
+  6.自定义日志输出到Log目录下的err.log & log.log
+  
+  7.特点：参数校验、错误处理、*_test.go测试模块
+
+  9.功能：/public/*是公有页面；/adm/*为私有页面，需要携带对应token（通过中间件保存在context中）
